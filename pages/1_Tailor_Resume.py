@@ -18,21 +18,34 @@ def ensure_font_exists():
     """Ensure the font exists in the fonts directory."""
     font_dir = Path("fonts")
     font_dir.mkdir(exist_ok=True)
-    font_path = font_dir / "DejaVuSans.ttf"
     
-    if not font_path.exists():
-        # Download the font from a reliable source
-        url = "https://raw.githubusercontent.com/dejavu-fonts/dejavu-fonts/master/ttf/DejaVuSans.ttf"
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            with open(font_path, "wb") as f:
-                f.write(response.content)
-        except Exception as e:
-            st.error(f"Failed to download font: {str(e)}")
-            return None
+    # Roboto font files
+    font_files = {
+        "Roboto-Regular.ttf": "https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap",
+        "Roboto-Bold.ttf": "https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap",
+        "Roboto-Italic.ttf": "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400&display=swap"
+    }
     
-    return str(font_path)
+    for font_file, url in font_files.items():
+        font_path = font_dir / font_file
+        if not font_path.exists():
+            try:
+                # Download the font from Google Fonts
+                response = requests.get(url)
+                response.raise_for_status()
+                
+                # Extract the actual font URL from the CSS
+                font_url = response.text.split('url(')[1].split(')')[0].strip('"\'')
+                font_response = requests.get(font_url)
+                font_response.raise_for_status()
+                
+                with open(font_path, "wb") as f:
+                    f.write(font_response.content)
+            except Exception as e:
+                st.error(f"Failed to download font {font_file}: {str(e)}")
+                return None
+    
+    return str(font_dir)
 
 def sanitize_text(text):
     """Sanitize text to handle problematic characters."""
@@ -203,38 +216,89 @@ if st.session_state.resume_text and st.session_state.job_description:
             pdf = FPDF()
             pdf.add_page()
             
-            # Add a Unicode-compatible font
-            font_path = ensure_font_exists()
-            if font_path:
+            # Set professional colors
+            primary_color = (0, 51, 102)  # Dark blue
+            secondary_color = (102, 102, 102)  # Gray
+            accent_color = (0, 102, 153)  # Light blue
+            
+            # Add Google Fonts
+            font_dir = ensure_font_exists()
+            if font_dir:
                 try:
-                    pdf.add_font('DejaVu', '', font_path, uni=True)
-                    pdf.set_font('DejaVu', '', 12)
+                    pdf.add_font('Roboto', '', str(Path(font_dir) / 'Roboto-Regular.ttf'), uni=True)
+                    pdf.add_font('Roboto', 'B', str(Path(font_dir) / 'Roboto-Bold.ttf'), uni=True)
+                    pdf.add_font('Roboto', 'I', str(Path(font_dir) / 'Roboto-Italic.ttf'), uni=True)
+                    pdf.set_font('Roboto', '', 12)
                 except Exception as e:
                     st.error(f"Failed to load font: {str(e)}")
-                    # Fallback to default font
                     pdf.set_font("Arial", size=12)
             else:
-                # Fallback to default font
                 pdf.set_font("Arial", size=12)
             
-            # Add content to PDF
-            pdf.cell(200, 10, txt="Tailored Resume", ln=True, align="C")
-            pdf.ln(10)
+            # Get the resume text from the analysis result
+            resume_text = st.session_state.tailored_resume
             
-            # Split text into lines and add to PDF
-            for line in tailored_resume.split("\n"):
-                try:
-                    # Sanitize the text before adding to PDF
-                    sanitized_line = sanitize_text(line)
-                    pdf.multi_cell(0, 10, txt=sanitized_line)
-                except Exception as e:
-                    st.error(f"Error adding line to PDF: {str(e)}")
-                    # Try to handle the line differently if it contains problematic characters
-                    try:
-                        pdf.multi_cell(0, 10, txt=line.encode('ascii', 'ignore').decode('ascii'))
-                    except:
-                        # If all else fails, skip the line
+            if resume_text:
+                # Split into sections
+                sections = [s.strip() for s in resume_text.split("\n\n") if s.strip()]
+                
+                # Process each section
+                for section in sections:
+                    if not section.strip():
                         continue
+                    
+                    # Extract section header and content
+                    lines = section.split("\n")
+                    header = lines[0].strip()
+                    content = "\n".join(lines[1:]).strip()
+                    
+                    # Skip Skills section
+                    if any(skill_keyword in header.upper() for skill_keyword in ["SKILLS", "TECHNICAL SKILLS", "PROFESSIONAL SKILLS", "CORE SKILLS"]):
+                        continue
+                    
+                    # Format section header
+                    pdf.set_font('Roboto', 'B', 14)
+                    pdf.set_text_color(*primary_color)
+                    pdf.cell(0, 10, txt=header, ln=True)
+                    pdf.ln(2)
+                    
+                    # Process content based on section type
+                    if "EXPERIENCE" in header.upper() or "WORK EXPERIENCE" in header.upper():
+                        # Process experience entries
+                        entries = content.split("\n")
+                        current_entry = []
+                        
+                        for line in entries:
+                            if line.strip():
+                                if line.strip().startswith(("-", "•", "*")):
+                                    # Process previous entry if exists
+                                    if current_entry:
+                                        process_experience_entry(pdf, current_entry, primary_color, secondary_color)
+                                        current_entry = []
+                                    current_entry.append(line)
+                                else:
+                                    current_entry.append(line)
+                        
+                        # Process last entry
+                        if current_entry:
+                            process_experience_entry(pdf, current_entry, primary_color, secondary_color)
+                    
+                    else:
+                        # Process other sections
+                        pdf.set_font('Roboto', '', 11)
+                        pdf.set_text_color(0, 0, 0)
+                        for line in content.split("\n"):
+                            if line.strip():
+                                pdf.multi_cell(0, 8, txt=line.strip())
+                        pdf.ln(5)
+                
+                # Add subtle footer
+                pdf.ln(10)
+                pdf.set_font('Roboto', 'I', 8)
+                pdf.set_text_color(*secondary_color)
+                pdf.cell(0, 5, txt=f"Generated on {datetime.now().strftime('%B %d, %Y')}", ln=True, align="C")
+            else:
+                st.error("No resume content available to generate PDF")
             
             # Save PDF
             pdf_path = os.path.join(resume_folder, "tailored_resume.pdf")
@@ -305,4 +369,35 @@ if st.session_state.resume_text and st.session_state.job_description:
 
 # Add a back button
 if st.button("← Back to Main Menu"):
-    st.switch_page("app.py") 
+    st.switch_page("app.py")
+
+def process_experience_entry(pdf, entry, primary_color, secondary_color):
+    """Helper function to process and format an experience entry"""
+    if not entry:
+        return
+    
+    # Extract title and company
+    title_company = entry[0].split("|")
+    title = title_company[0].strip()
+    company = title_company[1].strip() if len(title_company) > 1 else ""
+    
+    # Print title and company
+    pdf.set_font('Roboto', 'B', 11)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(0, 8, txt=f"{title} | {company}", ln=True)
+    
+    # Print dates and location if available
+    if len(entry) > 1:
+        pdf.set_font('Roboto', 'I', 10)
+        pdf.set_text_color(*secondary_color)
+        pdf.cell(0, 6, txt=entry[1], ln=True)
+    
+    # Print bullet points
+    pdf.set_font('Roboto', '', 11)
+    pdf.set_text_color(0, 0, 0)
+    for bullet in entry[2:]:
+        pdf.cell(5)
+        pdf.cell(5, 8, txt="•", ln=0)
+        pdf.multi_cell(0, 8, txt=bullet.lstrip("-•*").strip())
+    
+    pdf.ln(5) 
