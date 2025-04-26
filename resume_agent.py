@@ -4,8 +4,9 @@ from langchain.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from dotenv import load_dotenv
+import json
 
 # Load environment variables from .env file
 load_dotenv()
@@ -166,6 +167,152 @@ def generate_resume(resume_data):
     result = generate_chain.invoke({"resume_data": resume_data})
     return result.content
 
+def tailor_resume(resume_text: str, job_description: str, options: Dict[str, bool] = None) -> Dict[str, Any]:
+    """
+    Tailor a resume to match a job description and return detailed analysis in JSON format.
+    
+    Args:
+        resume_text (str): The text content of the resume
+        job_description (str): The job description to tailor the resume for
+        options (Dict[str, bool]): Optional tailoring preferences
+        
+    Returns:
+        Dict[str, Any]: A dictionary containing the analysis and tailored resume
+    """
+    # Default options if none provided
+    if options is None:
+        options = {
+            "emphasize_matching_skills": True,
+            "prioritize_relevant_experience": True,
+            "add_missing_keywords": True,
+            "optimize_for_ats": True
+        }
+    
+    # Create a prompt for detailed analysis
+    analysis_template = """
+    Analyze the resume and job description, then provide a detailed JSON response with the following structure:
+    {{
+        "skills_analysis": {{
+            "matching_skills": [],
+            "missing_skills": [],
+            "match_score": 0.0,
+            "suggestions": []
+        }},
+        "experience_analysis": {{
+            "relevant_experiences": [],
+            "irrelevant_experiences": [],
+            "match_score": 0.0,
+            "suggestions": []
+        }},
+        "keyword_analysis": {{
+            "found_keywords": [],
+            "missing_keywords": [],
+            "match_score": 0.0,
+            "suggestions": []
+        }},
+        "tailored_resume": {{
+            "summary": "",
+            "skills": [],
+            "experience": [],
+            "formatting_suggestions": []
+        }},
+        "overall_match_score": 0.0,
+        "improvement_suggestions": []
+    }}
+
+    Resume Text:
+    {resume_text}
+
+    Job Description:
+    {job_description}
+
+    Tailoring Options:
+    {options}
+
+    Provide a detailed analysis focusing on:
+    1. Skills matching and gaps
+    2. Experience relevance
+    3. Keyword optimization
+    4. Specific improvements needed
+    5. ATS optimization
+    """
+
+    analysis_prompt = PromptTemplate(
+        input_variables=["resume_text", "job_description", "options"],
+        template=analysis_template
+    )
+
+    # Create the chain for analysis
+    analysis_chain = analysis_prompt | llm
+
+    # Get the analysis
+    result = analysis_chain.invoke({
+        "resume_text": resume_text,
+        "job_description": job_description,
+        "options": json.dumps(options)
+    })
+
+    try:
+        # Parse the JSON response
+        analysis_result = json.loads(result.content)
+        return analysis_result
+    except json.JSONDecodeError:
+        # If the response isn't valid JSON, return a structured error
+        return {
+            "error": "Failed to parse analysis result",
+            "raw_response": result.content
+        }
+
+def generate_tailored_resume_text(resume_text: str, job_description: str, analysis_result: Dict[str, Any]) -> str:
+    """
+    Generate the final tailored resume text based on the analysis.
+    
+    Args:
+        resume_text (str): Original resume text
+        job_description (str): Job description
+        analysis_result (Dict[str, Any]): Analysis results from tailor_resume
+        
+    Returns:
+        str: The tailored resume text
+    """
+    # Create a prompt for generating the final resume
+    generate_template = """
+    Generate a tailored resume based on the following analysis:
+    
+    Analysis Results:
+    {analysis_result}
+    
+    Original Resume:
+    {resume_text}
+    
+    Job Description:
+    {job_description}
+    
+    Create a professionally formatted resume that:
+    1. Incorporates all suggested improvements
+    2. Emphasizes matching skills and experiences
+    3. Uses industry-specific keywords
+    4. Is optimized for ATS systems
+    5. Maintains a clean, professional format
+    """
+
+    generate_prompt = PromptTemplate(
+        input_variables=["resume_text", "job_description", "analysis_result"],
+        template=generate_template
+    )
+
+    # Create the chain for generation
+    generate_chain = generate_prompt | llm
+
+    # Generate the tailored resume
+    result = generate_chain.invoke({
+        "resume_text": resume_text,
+        "job_description": job_description,
+        "analysis_result": json.dumps(analysis_result)
+    })
+
+    return result.content
+
 # Run if this file is executed directly
 if __name__ == "__main__":
     # Example usage
@@ -185,3 +332,32 @@ if __name__ == "__main__":
     )
     
     print(response)
+
+    # Sample resume and job description
+    sample_resume = """
+    John Doe
+    Software Engineer
+    Experience:
+    - Developed web applications using Python and Django
+    - Implemented machine learning models for data analysis
+    - Led a team of 5 developers
+    """
+    
+    sample_job_description = """
+    Senior Software Engineer
+    Requirements:
+    - 5+ years of Python experience
+    - Strong background in machine learning
+    - Leadership experience
+    - Cloud computing knowledge
+    """
+    
+    # Perform analysis
+    analysis = tailor_resume(sample_resume, sample_job_description)
+    print("Analysis Results:")
+    print(json.dumps(analysis, indent=2))
+    
+    # Generate tailored resume
+    tailored_resume = generate_tailored_resume_text(sample_resume, sample_job_description, analysis)
+    print("\nTailored Resume:")
+    print(tailored_resume)
