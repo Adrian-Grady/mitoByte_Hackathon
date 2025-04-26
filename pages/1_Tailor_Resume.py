@@ -2,10 +2,19 @@ import streamlit as st
 from dotenv import load_dotenv
 import PyPDF2
 import io
+import json
+import os
+from datetime import datetime
+from fpdf import FPDF
 from resume_agent import tailor_resume, generate_tailored_resume_text
 
 # Load environment variables
 load_dotenv()
+
+# Create Resume folder if it doesn't exist
+RESUME_FOLDER = "Resume"
+if not os.path.exists(RESUME_FOLDER):
+    os.makedirs(RESUME_FOLDER)
 
 # Set page configuration
 st.set_page_config(
@@ -129,7 +138,53 @@ if st.session_state.resume_text and st.session_state.job_description:
             st.session_state.analysis_result = analysis
             st.session_state.tailored_resume = tailored_resume
             
-            st.success("Resume tailored successfully!")
+            # Create timestamped folder
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            user_name = st.session_state.get("user_name", "Anonymous")
+            resume_folder = os.path.join(RESUME_FOLDER, f"{timestamp}_{user_name}")
+            os.makedirs(resume_folder, exist_ok=True)
+            
+            # Save JSON version
+            resume_data = {
+                "original_resume": st.session_state.resume_text,
+                "job_description": st.session_state.job_description,
+                "tailored_resume": tailored_resume,
+                "analysis": analysis,
+                "timestamp": timestamp,
+                "user_name": user_name
+            }
+            
+            json_path = os.path.join(resume_folder, "resume_data.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(resume_data, f, indent=4, ensure_ascii=False)
+            
+            # Generate PDF
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", size=12)
+            
+            # Add content to PDF
+            pdf.cell(200, 10, txt="Tailored Resume", ln=True, align="C")
+            pdf.ln(10)
+            
+            # Split text into lines and add to PDF
+            for line in tailored_resume.split("\n"):
+                pdf.multi_cell(0, 10, txt=line)
+            
+            # Save PDF
+            pdf_path = os.path.join(resume_folder, "tailored_resume.pdf")
+            pdf.output(pdf_path)
+            
+            st.success("Resume tailored successfully and saved!")
+            
+            # Add download button for PDF
+            with open(pdf_path, "rb") as f:
+                st.download_button(
+                    label="Download Tailored Resume (PDF)",
+                    data=f,
+                    file_name="tailored_resume.pdf",
+                    mime="application/pdf"
+                )
     
     # Display results if available
     if st.session_state.analysis_result and st.session_state.tailored_resume:
@@ -142,14 +197,6 @@ if st.session_state.resume_text and st.session_state.job_description:
             st.markdown('<div class="section-box">', unsafe_allow_html=True)
             st.text_area("Preview", value=st.session_state.tailored_resume, height=400, key="tailored_resume_preview")
             st.markdown('</div>', unsafe_allow_html=True)
-            
-            # Add download button
-            st.download_button(
-                label="Download Tailored Resume",
-                data=st.session_state.tailored_resume,
-                file_name="tailored_resume.txt",
-                mime="text/plain"
-            )
         
         with result_col2:
             st.markdown("### Analysis & Suggestions")

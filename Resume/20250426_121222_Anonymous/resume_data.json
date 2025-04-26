@@ -1,0 +1,95 @@
+{
+    "original_resume": "Sage Raflik\nFull-stack software developerraflik.sage@gmail.com\ngithub.com/neonfuz\n(707) 362 - 5705\nMilwaukee WI\nFrontend\nReact, Angular, Svelte\nHTML, CSS, SVG\nTypescript, JavascriptBackend\nNext.js, Node, Deno\nPostgreSQL, SQLite\nMongoDB, CouchDBApplication\nC, C++, Rust, GDB\nJava, C#, Python\nUnity3D, AndroidSysadmin\n15+ years linux\nAWS, S3, SSH\nDocker, git\nExperience\nGeno.Me | Next.js, React, MongoDB, Express, Node | Nov 2022 - Feb 2025\nFull stack developer for biomedical techonlogy startup primarily responsible for frontend application.\nRegarded as the lead React developer on the team. Designed and implemented many features in the\napplication, writing custom code as well as evaluating and using libraries and frameworks as appropriate.\nSuggested and lead implementation of many improvements to the application. Examples include merging\nthe application to a monorepo to improve PR workflow, implementing continuous integration, migrating from\nreact-router to nextjs, writing utility scripts to simplify application startup\nSuggested and implemented automation of medical system integration using browser automation, saving 2\nweeks of expected testing team time with 1 day of development.\nTrained a new developer, who was making contributions to the codebase within the first week.\nWarhog Financials | MongoDB, Express, Angular, Node | 2015 - 2018, 2019 - 2022\nLead Full-Stack Developer for web based accounting software.\nDesigned and implemented new features, primarily using AngularJS 1.x and MongoDB.\nMigrated monolithic application from AWS Ubuntu 16.04 to a reproducible docker container.\nEden Farms | React, CouchDB, Puppeteer | 2018 - 2019\nDeveloped and maintained custom Seed to Sale software for a Cannabis farm to follow regulations.\nCreated database with data entry interface, and browser automation to upload data to automate re-entry\ninto the county regulatory system.\nRead relevant regulations to ensure software was compliant.\nFreelance Development | React, Gatsby, JAM stack, Netlify, jQuery | 2016 - 2021\nWorked directly with clients to create websites for small businesses starting from discussion around core\nbusiness concerns, choosing technologies and partners to complete the job.\nOptimized SEO to reach top Google result for key searches.\nEducation\nMilwaukee Area Technical College | Video Game Development | 2014-2016\nLearned Unity3D, C# development, and practices like code testing, Agile, Scrum, and Kanban.\nExperienced working collaboratively with 40+ people on single project.",
+    "job_description": "DESCRIPTION\nAWS Sales, Marketing, and Global Services (SMGS) is responsible for driving revenue, adoption, and growth from the largest and fastest growing small- and mid-market accounts to enterprise-level customers including public sector. The AWS Global Support team interacts with leading companies and believes that world-class support is critical to customer success. AWS Support also partners with a global list of customers that are building mission-critical applications on top of AWS services.\n\nCome join the AWS Marketplace Team in our mission to change the way enterprise software are bought and sold! AWS Marketplace enables software sellers to reach all AWS customers; and enables software buyers to easily discover, purchase and consume software. Our goals include enriching the platform to support more diverse selection, improving buyer and seller experience and implementing new ideas to add new dimensions to the product. Our vision is to make AWS Marketplace one stop shop for buying and selling software just like Amazon.com is for retail.\n\nWe are looking for an experienced Software Development Engineer to help the team take AWS Marketplace to the next level. As a Software Development Engineer on the team you will own significant portions of the product and will have significant influence on our strategy by helping define the next wave of product features and system architecture. The systems are complex and there are huge opportunities to work at all levels from the front end user experience, to a set of robust platform services, to system level pieces and everything in between. You should be somebody who enjoys working on complex system software, is customer-centric, and is passionate about building quality software as well as achieving operational excellence.\n\nThe ideal candidate will have a demonstrable track record of success delivering new features or products. This person has thrived and succeeded in delivering high quality technology products/services in a hyper-growth environment where priorities shift fast. They have design and implementation experience, knowledge of web services and protocols, and an in-depth knowledge of distributed systems architectures. Experience with asynchronous workflow systems is a plus.\n\nInclusive Team Culture:\nHere at AWS, we embrace our differences. We are committed to furthering our culture of inclusion. We have ten employee-led affinity groups, reaching 40,000 employees in over 190 chapters globally. We have innovative benefit offerings, and we host annual and ongoing learning experiences, including our Conversations on Race and Ethnicity (CORE) and AmazeCon (gender diversity) conferences. Amazon’s culture of inclusion is reinforced within our 14 Leadership Principles, which remind team members to seek diverse perspectives, learn and be curious, and earn trust.\n\nWork/Life Balance:\nOur team also puts a high value on work-life balance. Striking a healthy balance between your personal and professional life is crucial to your happiness and success here, which is why we aren’t focused on how many hours you spend at work or online. Instead, we’re happy to offer a flexible schedule so you can have a more productive and well-balanced life—both in and outside of work. This position involves on-call responsibilities, typically for one week every two months. We don’t like getting paged in the middle of the night or on the weekend, so we work to ensure that our systems are fault tolerant. When we do get paged, we work together to resolve the root cause so that we don’t get paged for the same issue twice.\n\nMentorship & Career Growth:\nOur team is dedicated to supporting new members. We have a broad mix of experience levels and tenures, and we’re building an environment that celebrates knowledge sharing and mentorship. Our senior members enjoy one-on-one mentoring and thorough, but kind, code reviews. We care about your career growth and strive to assign projects based on what will help each team member develop into a better-rounded engineer and enable them to take on more complex tasks in the future.\n\n\nFor more information on Amazon Web Services, please visit http://aws.amazon.com\n\n10010\n\nAbout the team\nDiverse Experiences\nAmazon values diverse experiences. Even if you do not meet all of the preferred qualifications and skills listed in the job description, we encourage candidates to apply. If your career is just starting, hasn’t followed a traditional path, or includes alternative experiences, don’t let it stop you from applying.\n\nWhy AWS\nAmazon Web Services (AWS) is the world’s most comprehensive and broadly adopted cloud platform. We pioneered cloud computing and never stopped innovating — that’s why customers from the most successful startups to Global 500 companies trust our robust suite of products and services to power their businesses.\n\nWork/Life Balance\nWe value work-life harmony. Achieving success at work should never come at the expense of sacrifices at home, which is why flexible work hours and arrangements are part of our culture. When we feel supported in the workplace and at home, there’s nothing we can’t achieve in the cloud.\n\nInclusive Team Culture\nHere at AWS, it’s in our nature to learn and be curious. Our employee-led affinity groups foster a culture of inclusion that empower us to be proud of our differences. Ongoing events and learning experiences, including our Conversations on Race and Ethnicity (CORE) and AmazeCon (gender diversity) conferences, inspire us to never stop embracing our uniqueness.\n\nMentorship and Career Growth\nWe’re continuously raising our performance bar as we strive to become Earth’s Best Employer. That’s why you’ll find endless knowledge-sharing, mentorship and other career-advancing resources here to help you develop into a better-rounded professional.\n\n\nBASIC QUALIFICATIONS\n- 3+ years of non-internship professional software development experience\n- 2+ years of non-internship design or architecture (design patterns, reliability and scaling) of new and existing systems experience\n- Experience programming with at least one software programming language\n\nPREFERRED QUALIFICATIONS\n- 3+ years of full software development life cycle, including coding standards, code reviews, source control management, build processes, testing, and operations experience\n- Bachelor's degree in computer science or equivalent\n\nAmazon is an equal opportunity employer and does not discriminate on the basis of protected veteran status, disability, or other legally protected status.\n\nLos Angeles County applicants: Job duties for this position include: work safely and cooperatively with other employees, supervisors, and staff; adhere to standards of excellence despite stressful conditions; communicate effectively and respectfully with employees, supervisors, and staff to ensure exceptional customer service; and follow all federal, state, and local laws and Company policies. Criminal history may have a direct, adverse, and negative relationship with some of the material job duties of this position. These include the duties and responsibilities listed above, as well as the abilities to adhere to company policies, exercise sound judgment, effectively manage stress and work safely and respectfully with others, exhibit trustworthiness and professionalism, and safeguard business operations and the Company’s reputation. Pursuant to the Los Angeles County Fair Chance Ordinance, we will consider for employment qualified applicants with arrest and conviction records.\n\nOur inclusive culture empowers Amazonians to deliver the best results for our customers. If you have a disability and need a workplace accommodation or adjustment during the application and hiring process, including support for the interview or onboarding process, please visit https://amazon.jobs/content/en/how-we-hire/accommodations for more information. If the country/region you’re applying in isn’t listed, please contact your Recruiting Partner.\n\nOur compensation reflects the cost of labor across several US geographic markets. The base pay for this position ranges from $129,300/year in our lowest geographic market up to $223,600/year in our highest geographic market. Pay is based on a number of factors including market location and may vary depending on job-related knowledge, skills, and experience. Amazon is a total compensation company. Dependent on the position offered, equity, sign-on payments, and other forms of compensation may be provided as part of a total compensation package, in addition to a full range of medical, financial, and/or other benefits. For more information, please visit https://www.aboutamazon.com/workplace/employee-benefits. This position will remain posted until filled. Applicants should apply via our internal or external career site.",
+    "tailored_resume": "Sage Raflik\nSoftware Development Engineer\nEmail: raflik.sage@gmail.com\nContact: (707) 362 - 5705\nLocation: Milwaukee, WI\nGitHub: github.com/neonfuz\n\nSummary:\nFull-stack software developer with a proven track record in delivering high-quality software products in fast-paced environments. Extensive experience in React, Node, MongoDB, and AWS. Seeking to leverage these skills as a Software Development Engineer. Able to adapt to shifting priorities and passionate about achieving operational excellence.\n\nSkills:\n- Full-stack software development\n- Proficient in React, Node, MongoDB\n- AWS, Docker, git\n- C, C++, Rust, GDB\n- Java, C#, Python\n- Unity3D, Android\n\nExperience:\nGeno.Me, Milwaukee, WI | Full Stack Developer | Nov 2022 - Feb 2025\n- Implemented and evaluated libraries and frameworks for a biomedical technology startup.\n- Lead implementation of application improvements such as continuous integration.\n- Automated medical system integration using browser automation, saving 2 weeks of testing team time.\n\nWarhog Financials, Milwaukee, WI | Lead Full-Stack Developer | 2015 - 2018, 2019 - 2022\n- Designed and implemented new features using AngularJS 1.x and MongoDB for web based accounting software.\n- Migrated monolithic application from AWS Ubuntu 16.04 to a reproducible Docker container.\n\nEden Farms, Milwaukee, WI | Software Developer | 2018 - 2019\n- Developed and maintained custom Seed to Sale software for a Cannabis farm to follow regulations.\n- Created database with data entry interface and browser automation to automate re-entry into the county regulatory system.\n\nFreelance Development, Milwaukee, WI | Full Stack Developer | 2016 - 2021\n- Worked directly with clients to create websites for small businesses, choosing appropriate technologies and partners.\n- Optimized SEO to reach top Google result for key searches.\n\nEducation:\nMilwaukee Area Technical College, Milwaukee, WI | Video Game Development | 2014-2016\n- Learned Unity3D, C# development, and practices like code testing, Agile, Scrum, and Kanban.\n- Experienced working collaboratively with 40+ people on single project.\n\nSuggestions for further improvement:\n- Gain experience in full software development life cycle\n- Expand on software development skills\n- Highlight experience with asynchronous workflow systems\n- Include relevant keywords from the job description\n- Make resume ATS-friendly by avoiding graphics and unusual formatting\n- Use bullet points for job descriptions\n- Use action verbs to start each bullet point\n- Quantify achievements where possible",
+    "analysis": {
+        "skills_analysis": {
+            "matching_skills": [
+                "Full-stack software development",
+                "React",
+                "Node",
+                "MongoDB",
+                "AWS",
+                "Docker",
+                "git"
+            ],
+            "missing_skills": [
+                "Experience with asynchronous workflow systems",
+                "Experience programming with at least one software programming language",
+                "Full software development life cycle"
+            ],
+            "match_score": 0.7,
+            "suggestions": [
+                "Acquire skills in asynchronous workflow systems",
+                "Highlight experience in software programming languages",
+                "Gain experience in full software development life cycle"
+            ]
+        },
+        "experience_analysis": {
+            "relevant_experiences": [
+                "Geno.Me: Full stack developer for biomedical techonlogy startup",
+                "Warhog Financials: Lead Full-Stack Developer for web based accounting software",
+                "Eden Farms: Developed and maintained custom Seed to Sale software",
+                "Freelance Development: Worked directly with clients to create websites for small businesses"
+            ],
+            "irrelevant_experiences": [],
+            "match_score": 1.0,
+            "suggestions": [
+                "Highlight experience in AWS, MongoDB, React and Node in your job descriptions"
+            ]
+        },
+        "keyword_analysis": {
+            "found_keywords": [
+                "AWS",
+                "React",
+                "MongoDB",
+                "Full-stack software development",
+                "Node"
+            ],
+            "missing_keywords": [
+                "Software Development Engineer",
+                "asynchronous workflow systems",
+                "software programming language",
+                "full software development life cycle"
+            ],
+            "match_score": 0.55,
+            "suggestions": [
+                "Include 'Software Development Engineer' in your title or summary",
+                "Highlight experience with asynchronous workflow systems",
+                "Emphasize your proficiency in a software programming language",
+                "Demonstrate your experience in full software development life cycle"
+            ]
+        },
+        "tailored_resume": {
+            "summary": "Full-stack software developer with extensive experience in React, Node, MongoDB, and AWS. Proven track record in delivering high-quality software products in fast-paced environments. Seeking to leverage these skills as a Software Development Engineer.",
+            "skills": [
+                "Full-stack software development",
+                "React",
+                "Node",
+                "MongoDB",
+                "AWS",
+                "Docker",
+                "git"
+            ],
+            "experience": [
+                "Geno.Me: Full stack developer for biomedical techonlogy startup",
+                "Warhog Financials: Lead Full-Stack Developer for web based accounting software",
+                "Eden Farms: Developed and maintained custom Seed to Sale software",
+                "Freelance Development: Worked directly with clients to create websites for small businesses"
+            ],
+            "formatting_suggestions": [
+                "Use bullet points for job descriptions",
+                "Use action verbs to start each bullet point",
+                "Quantify achievements where possible"
+            ]
+        },
+        "overall_match_score": 0.75,
+        "improvement_suggestions": [
+            "Expand on your software development skills",
+            "Include relevant keywords from the job description",
+            "Make your resume ATS-friendly by avoiding graphics and unusual formatting"
+        ]
+    },
+    "timestamp": "20250426_121222",
+    "user_name": "Anonymous"
+}
