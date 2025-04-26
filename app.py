@@ -1,8 +1,14 @@
 import streamlit as st
 from dotenv import load_dotenv
+import os
 
-# Load environment variables
+# Load environment variables from .env file
 load_dotenv()
+
+# Verify API key is set
+if not os.getenv("OPENAI_API_KEY"):
+    st.error("OpenAI API key not found. Please set it in your .env file.")
+    st.stop()
 
 # Set page configuration
 st.set_page_config(

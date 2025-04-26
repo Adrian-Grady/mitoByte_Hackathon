@@ -7,9 +7,50 @@ import os
 from datetime import datetime
 from fpdf import FPDF
 from resume_agent import tailor_resume, generate_tailored_resume_text
+import requests
+from pathlib import Path
+import unicodedata
 
 # Load environment variables
 load_dotenv()
+
+def ensure_font_exists():
+    """Ensure the font exists in the fonts directory."""
+    font_dir = Path("fonts")
+    font_dir.mkdir(exist_ok=True)
+    font_path = font_dir / "DejaVuSans.ttf"
+    
+    if not font_path.exists():
+        # Download the font from a reliable source
+        url = "https://raw.githubusercontent.com/dejavu-fonts/dejavu-fonts/master/ttf/DejaVuSans.ttf"
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            with open(font_path, "wb") as f:
+                f.write(response.content)
+        except Exception as e:
+            st.error(f"Failed to download font: {str(e)}")
+            return None
+    
+    return str(font_path)
+
+def sanitize_text(text):
+    """Sanitize text to handle problematic characters."""
+    # Replace problematic characters with their ASCII equivalents
+    replacements = {
+        '\u2013': '-',  # en-dash
+        '\u2014': '--', # em-dash
+        '\u2018': "'",  # left single quote
+        '\u2019': "'",  # right single quote
+        '\u201C': '"',  # left double quote
+        '\u201D': '"',  # right double quote
+        '\u2026': '...' # ellipsis
+    }
+    
+    for char, replacement in replacements.items():
+        text = text.replace(char, replacement)
+    
+    return text
 
 # Create Resume folder if it doesn't exist
 RESUME_FOLDER = "Resume"
@@ -161,7 +202,20 @@ if st.session_state.resume_text and st.session_state.job_description:
             # Generate PDF
             pdf = FPDF()
             pdf.add_page()
-            pdf.set_font("Arial", size=12)
+            
+            # Add a Unicode-compatible font
+            font_path = ensure_font_exists()
+            if font_path:
+                try:
+                    pdf.add_font('DejaVu', '', font_path, uni=True)
+                    pdf.set_font('DejaVu', '', 12)
+                except Exception as e:
+                    st.error(f"Failed to load font: {str(e)}")
+                    # Fallback to default font
+                    pdf.set_font("Arial", size=12)
+            else:
+                # Fallback to default font
+                pdf.set_font("Arial", size=12)
             
             # Add content to PDF
             pdf.cell(200, 10, txt="Tailored Resume", ln=True, align="C")
@@ -169,7 +223,18 @@ if st.session_state.resume_text and st.session_state.job_description:
             
             # Split text into lines and add to PDF
             for line in tailored_resume.split("\n"):
-                pdf.multi_cell(0, 10, txt=line)
+                try:
+                    # Sanitize the text before adding to PDF
+                    sanitized_line = sanitize_text(line)
+                    pdf.multi_cell(0, 10, txt=sanitized_line)
+                except Exception as e:
+                    st.error(f"Error adding line to PDF: {str(e)}")
+                    # Try to handle the line differently if it contains problematic characters
+                    try:
+                        pdf.multi_cell(0, 10, txt=line.encode('ascii', 'ignore').decode('ascii'))
+                    except:
+                        # If all else fails, skip the line
+                        continue
             
             # Save PDF
             pdf_path = os.path.join(resume_folder, "tailored_resume.pdf")

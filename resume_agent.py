@@ -7,14 +7,22 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from dotenv import load_dotenv
 import json
+import httpx
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Initialize the LLM
+# Create a custom HTTP client that handles the proxies issue
+class CustomHTTPClient(httpx.Client):
+    def __init__(self, *args, **kwargs):
+        kwargs.pop("proxies", None)  # Remove the 'proxies' argument if present
+        super().__init__(*args, **kwargs)
+
+# Initialize the LLM with the custom HTTP client
 llm = ChatOpenAI(
     model_name="gpt-4",
-    temperature=0.7
+    temperature=0.7,
+    http_client=CustomHTTPClient()
 )
 
 # Define data models for resume sections
