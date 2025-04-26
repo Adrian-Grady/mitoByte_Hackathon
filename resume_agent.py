@@ -12,7 +12,7 @@ load_dotenv()
 
 # Initialize the LLM
 llm = ChatOpenAI(
-    model_name="gpt-4o",
+    model_name="gpt-4",
     temperature=0.7
 )
 
@@ -50,82 +50,110 @@ class Skill(BaseModel):
     category: str = Field(description="Skill category (e.g., Programming Languages, Tools)")
     skills: List[str] = Field(description="List of skills in this category")
 
+class Certification(BaseModel):
+    name: str = Field(description="Certification name")
+    issuer: str = Field(description="Certification issuer")
+    date: Optional[str] = Field(description="Date obtained", default=None)
+    expiration: Optional[str] = Field(description="Expiration date if applicable", default=None)
+
 class Resume(BaseModel):
     personal_info: PersonalInfo = Field(description="Personal and contact information")
     education: List[Education] = Field(description="Educational background")
     experience: List[Experience] = Field(description="Work experience")
     projects: Optional[List[Project]] = Field(description="Notable projects", default=None)
     skills: List[Skill] = Field(description="Skills organized by category")
+    certifications: Optional[List[Certification]] = Field(description="Professional certifications", default=None)
 
-# Create a prompt template for resume building
-resume_template = """
-You are a professional resume builder assistant. Your goal is to help users create a well-structured, 
-professional resume that highlights their strengths and experiences effectively.
+# Create a prompt template for resume analysis and tailoring
+resume_analysis_template = """
+You are an expert resume consultant and career coach. Your task is to analyze the provided resume and job description, then provide specific recommendations for tailoring the resume to match the job requirements.
 
-Current Resume Information:
+Resume Text:
+{resume_text}
+
+Job Description:
+{job_description}
+
+Current Resume Data:
 {current_resume}
 
-User Input: {user_input}
+Please analyze the resume and job description, then:
+1. Identify key skills and requirements from the job description
+2. Highlight matching experiences and skills in the current resume
+3. Suggest specific improvements to better align the resume with the job
+4. Recommend which experiences to emphasize or de-emphasize
+5. Suggest any missing keywords or skills that should be added
+6. Provide specific examples of how to rephrase bullet points to better match the job requirements
 
-Current Step: {current_step}
-
-Based on the current step and user input, please help build or improve the resume.
-If information is missing or unclear, ask specific questions to gather the necessary details.
-Provide guidance on best practices for resume writing when appropriate.
-
-Your response should be helpful, professional, and focused on creating an effective resume.
+Your response should be detailed and actionable, focusing on specific changes that will make the resume more compelling for this particular job.
 """
 
-resume_prompt = PromptTemplate(
-    input_variables=["current_resume", "user_input", "current_step"],
-    template=resume_template
+resume_analysis_prompt = PromptTemplate(
+    input_variables=["resume_text", "job_description", "current_resume"],
+    template=resume_analysis_template
 )
 
-# Create the chain using the new pattern
-resume_chain = resume_prompt | llm | RunnablePassthrough()
+# Create the chain for resume analysis
+resume_analysis_chain = resume_analysis_prompt | llm | RunnablePassthrough()
 
 def process_resume_input(user_input, current_resume, current_step):
     """
-    Process user input for resume building based on the current step
+    Process the resume and job description to provide tailoring recommendations
     
     Args:
-        user_input (str): The user's input text
+        user_input (str): The combined resume text and job description
         current_resume (dict): The current state of the resume
-        current_step (str): The current step in the resume building process
+        current_step (str): The current step in the process
         
     Returns:
-        tuple: (response content, updated resume data)
+        dict: A dictionary containing:
+            - content: The analysis and recommendations
+            - next_step: The next step in the process
+            - updated_resume: The updated resume data
     """
-    result = resume_chain.invoke({
-        "user_input": user_input,
-        "current_resume": current_resume,
-        "current_step": current_step
+    # Split the input into resume text and job description
+    parts = user_input.split("\nJob Description: ")
+    resume_text = parts[0].replace("Resume: ", "")
+    job_description = parts[1] if len(parts) > 1 else ""
+    
+    result = resume_analysis_chain.invoke({
+        "resume_text": resume_text,
+        "job_description": job_description,
+        "current_resume": current_resume
     })
     
-    # Here you would add logic to update the resume based on the response
-    # This is a simplified version - in a real implementation, you'd parse the response
-    # and update the resume data structure accordingly
-    
-    return result.content
+    return {
+        "content": result.content,
+        "next_step": "tailor",
+        "updated_resume": current_resume
+    }
 
 def generate_resume(resume_data):
     """
-    Generate a formatted resume from the collected data
+    Generate a tailored resume based on the job description
     
     Args:
-        resume_data (dict): The complete resume data
+        resume_data (dict): The resume data to be tailored
         
     Returns:
-        str: Formatted resume text
+        str: Formatted resume text optimized for the specific job
     """
-    # Create a prompt for generating the final resume
+    # Create a prompt for generating the tailored resume
     generate_template = """
     Create a professionally formatted resume using the following information:
     
     {resume_data}
     
-    Format the resume in a clean, professional layout that would be suitable for printing or PDF conversion.
-    Use appropriate sections, bullet points, and formatting to highlight the candidate's strengths.
+    Format the resume following these guidelines:
+    1. Use a clean, ATS-friendly layout that will pass through applicant tracking systems
+    2. Include a compelling professional summary that highlights qualifications relevant to the job
+    3. Emphasize experiences and skills that match the job requirements
+    4. Use strong action verbs and industry-specific keywords from the job description
+    5. Ensure consistent formatting throughout
+    6. Prioritize and rephrase experiences to better align with the job requirements
+    7. Optimize the skills section to highlight relevant technical and soft skills
+    
+    The final resume should be tailored specifically for the job and make the candidate stand out to recruiters.
     """
     
     generate_prompt = PromptTemplate(
@@ -146,13 +174,14 @@ if __name__ == "__main__":
         "education": [],
         "experience": [],
         "skills": [],
-        "projects": []
+        "projects": [],
+        "certifications": []
     }
     
     response = process_resume_input(
-        "My name is John Doe and I'm a software engineer with 5 years of experience.",
+        "Resume: John Doe\nSoftware Engineer\n5 years experience\n\nJob Description: Looking for a senior software engineer with Python experience",
         sample_resume,
-        "personal_info"
+        "analysis"
     )
     
     print(response)
