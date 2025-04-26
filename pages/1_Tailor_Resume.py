@@ -65,6 +65,37 @@ def sanitize_text(text):
     
     return text
 
+def process_experience_entry(pdf, entry, primary_color, secondary_color):
+    """Helper function to process and format an experience entry"""
+    if not entry:
+        return
+    
+    # Extract title and company
+    title_company = entry[0].split("|")
+    title = title_company[0].strip()
+    company = title_company[1].strip() if len(title_company) > 1 else ""
+    
+    # Print title and company
+    pdf.set_font('Roboto', 'B', 11)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(0, 8, txt=f"{title} | {company}", ln=True)
+    
+    # Print dates and location if available
+    if len(entry) > 1:
+        pdf.set_font('Roboto', 'I', 10)
+        pdf.set_text_color(*secondary_color)
+        pdf.cell(0, 6, txt=entry[1], ln=True)
+    
+    # Print bullet points
+    pdf.set_font('Roboto', '', 11)
+    pdf.set_text_color(0, 0, 0)
+    for bullet in entry[2:]:
+        pdf.cell(5)
+        pdf.cell(5, 8, txt="•", ln=0)
+        pdf.multi_cell(0, 8, txt=bullet.lstrip("-•*").strip())
+    
+    pdf.ln(5)
+
 # Create Resume folder if it doesn't exist
 RESUME_FOLDER = "Resume"
 if not os.path.exists(RESUME_FOLDER):
@@ -369,35 +400,4 @@ if st.session_state.resume_text and st.session_state.job_description:
 
 # Add a back button
 if st.button("← Back to Main Menu"):
-    st.switch_page("app.py")
-
-def process_experience_entry(pdf, entry, primary_color, secondary_color):
-    """Helper function to process and format an experience entry"""
-    if not entry:
-        return
-    
-    # Extract title and company
-    title_company = entry[0].split("|")
-    title = title_company[0].strip()
-    company = title_company[1].strip() if len(title_company) > 1 else ""
-    
-    # Print title and company
-    pdf.set_font('Roboto', 'B', 11)
-    pdf.set_text_color(0, 0, 0)
-    pdf.cell(0, 8, txt=f"{title} | {company}", ln=True)
-    
-    # Print dates and location if available
-    if len(entry) > 1:
-        pdf.set_font('Roboto', 'I', 10)
-        pdf.set_text_color(*secondary_color)
-        pdf.cell(0, 6, txt=entry[1], ln=True)
-    
-    # Print bullet points
-    pdf.set_font('Roboto', '', 11)
-    pdf.set_text_color(0, 0, 0)
-    for bullet in entry[2:]:
-        pdf.cell(5)
-        pdf.cell(5, 8, txt="•", ln=0)
-        pdf.multi_cell(0, 8, txt=bullet.lstrip("-•*").strip())
-    
-    pdf.ln(5) 
+    st.switch_page("app.py") 
